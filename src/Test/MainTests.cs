@@ -12,8 +12,8 @@ namespace BlinkSyncTests
     [TestClass]
     public class MainTest
     {
-        public const string baseDirSrc = @"C:\TestSrc";
-        public const string baseDirDest = @"C:\TestDest";
+        public const string baseDirSrc = @"C:\Data\Temp\TestSrc";
+        public const string baseDirDest = @"C:\Data\Temp\TestDest";
 
         private InputParams inputParams;
         private SyncResults expectedResults;
@@ -23,6 +23,19 @@ namespace BlinkSyncTests
         {
             inputParams = new InputParams();
             expectedResults = new SyncResults();
+        }
+
+        [TestMethod]
+        public void SimulationDiff()
+        {
+            inputParams = new InputParams()
+            {
+                Simulation = true
+            };
+
+            SyncResults results = new SyncResults();
+            var sync = new Sync(baseDirSrc, baseDirDest);
+            results = sync.Start(inputParams);
         }
 
         [TestMethod]

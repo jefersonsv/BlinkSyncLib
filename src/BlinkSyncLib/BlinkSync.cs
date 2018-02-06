@@ -30,8 +30,15 @@ namespace BlinkSyncLib
         /// <param name="destinationDirectory"></param>
         public Sync(string sourceDirectory, string destinationDirectory) : this()
         {
-            this.SourceDirectory = new DirectoryInfo(sourceDirectory);
-            this.DestinationDirectory = new DirectoryInfo(destinationDirectory);
+            if (this.Configuration.Simulation)
+            {
+
+            }
+            else
+            {
+                this.SourceDirectory = new DirectoryInfo(sourceDirectory);
+                this.DestinationDirectory = new DirectoryInfo(destinationDirectory);
+            }
         }
 
         #endregion
@@ -255,7 +262,9 @@ namespace BlinkSyncLib
                     Trace("Creating directory: {0}", diDest.FullName);
 
                     // create the destination directory
-                    diDest.Create();
+                    if (!inputParams.Simulation)
+                        diDest.Create();
+
                     results.DirectoriesCreated++;
                 }
                 catch (Exception ex)
@@ -313,9 +322,12 @@ namespace BlinkSyncLib
                         Trace("Copying: {0} -> {1}", srcFile.FullName, Path.GetFullPath(destPath));
 
                         // copy the file
-                        srcFile.CopyTo(destPath, true);
-                        // set attributes appropriately
-                        File.SetAttributes(destPath, srcFile.Attributes);
+                        if (!inputParams.Simulation)
+                        {
+                            srcFile.CopyTo(destPath, true);
+                            // set attributes appropriately
+                            File.SetAttributes(destPath, srcFile.Attributes);
+                        }
                         results.FilesCopied++;
                     }
                     catch (Exception ex)
@@ -343,9 +355,12 @@ namespace BlinkSyncLib
 
                             Trace("Deleting: {0} ", destFile.FullName);
 
-                            destFile.IsReadOnly = false;
-                            // delete the file
-                            destFile.Delete();
+                            if (!inputParams.Simulation)
+                            {
+                                destFile.IsReadOnly = false;
+                                // delete the file
+                                destFile.Delete();
+                            }
                             results.FilesDeleted++;
                         }
                         catch (Exception ex)
@@ -387,9 +402,12 @@ namespace BlinkSyncLib
                         try
                         {
                             Trace("Deleting directory: {0} ", diDestSubdir.FullName);
-                            
-                            // delete directory
-                            DeleteDirectory(diDestSubdir);
+
+                            if (!inputParams.Simulation)
+                            {
+                                // delete directory
+                                DeleteDirectory(diDestSubdir);
+                            }
                             results.DirectoriesDeleted++;
                         }
                         catch (Exception ex)

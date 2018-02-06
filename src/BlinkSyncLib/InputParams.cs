@@ -5,7 +5,8 @@ namespace BlinkSyncLib
 {
     public class InputParams
     {
-       
+        public bool Simulation { get; set; }
+
         /// <summary>
         /// Should exclude hidden files/directories in source
         /// </summary>
